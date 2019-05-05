@@ -1,0 +1,24 @@
+tracing: &tracing
+  tracingServiceHost: jaeger
+  tracingServicePort: 6832
+
+messaging:
+  appName: messaging
+  serverUri: 0.0.0.0:50050
+  tracing: *tracing
+  db:
+    type: postgres
+    url: postgres://messaging:password@messaging-db:5432/messaging
+  entities:
+    - /app/build/services/messaging/src/entities/*
+  migrations:
+    - /app/build/services/messaging/src/migrations/*
+  migrationsDir: services/messaging/src/migrations
+
+gateway:
+  port: 50050
+  appName: gateway
+  services:
+    - type: messaging
+      uri: messaging:50050
+  tracing: *tracing

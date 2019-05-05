@@ -1,0 +1,11 @@
+syntax="proto3";
+
+package messaging;
+
+message SendMessageRequest {
+    string username = 1;
+    string content = 2;
+    string tracingId = 3;
+}
+
+message SendMessageResponse {}

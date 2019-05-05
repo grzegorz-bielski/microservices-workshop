@@ -1,0 +1,22 @@
+version: '3.4'
+services:
+  gateway:
+    depends_on:
+      - jaeger
+      - adminer
+
+  adminer:
+    hostname: adminer
+    image: adminer
+    networks:
+      - app
+    depends_on:
+      - messaging
+
+  jaeger:
+    hostname: jaeger
+    image: jaegertracing/all-in-one
+    environment:
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+    networks:
+      - app

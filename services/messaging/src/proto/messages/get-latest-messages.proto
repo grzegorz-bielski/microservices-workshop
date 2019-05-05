@@ -1,0 +1,13 @@
+syntax="proto3";
+
+import "message.proto";
+
+package messaging;
+
+message GetLatestMessagesRequest {
+  string tracingId = 1;
+}
+
+message GetLatestMessagesResponse {
+  repeated Message messages = 1;
+}

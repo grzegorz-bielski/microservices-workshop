@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+import "messages/send-message.proto";
+import "messages/join-chat.proto";
+import "messages/get-latest-messages.proto";
+import "messages/message.proto";
+
+package messaging;
+
+service MessagingService {
+    rpc sendMessage (SendMessageRequest) returns (SendMessageResponse) {};
+    rpc getLatestMessages (GetLatestMessagesRequest) returns (GetLatestMessagesResponse) {};
+    rpc joinChat (JoinChatRequest) returns (stream Message) {};
+}

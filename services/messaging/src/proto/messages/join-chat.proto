@@ -1,0 +1,8 @@
+syntax="proto3";
+
+package messaging;
+
+message JoinChatRequest {
+  string username = 1;
+  string tracingId = 2;
+}

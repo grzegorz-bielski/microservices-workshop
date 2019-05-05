@@ -1,0 +1,6 @@
+{
+  "messaging": {
+    "proto": "services/messaging/src/proto/messaging-service.proto",
+    "client": "services/messaging/src/grpc/client"
+  }
+}
