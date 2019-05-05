@@ -1,5 +1,5 @@
-import { ProjectFile } from '.'
-import { join } from 'path'
+import { ProjectFile } from '.';
+import { join } from 'path';
 
 const createContent = (): string => {
   return `
@@ -22,12 +22,12 @@ const createContent = (): string => {
 
     container.resolve<any>('server')
   })()
-  `
-}
+  `;
+};
 
 export const projectIndex = (baseDir: string): ProjectFile => {
   return {
     path: join(baseDir, 'src', 'index.ts'),
     content: createContent(),
-  }
-}
+  };
+};

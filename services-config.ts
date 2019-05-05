@@ -4,6 +4,7 @@ import { Logger } from './shared';
 import { upperFirst } from 'lodash';
 
 type ServiceType = 'messaging';
+// service-types-ends-here
 
 export type ServicesManifest = {
   [key: string]: {

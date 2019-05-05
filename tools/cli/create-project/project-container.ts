@@ -1,9 +1,9 @@
-import { ProjectFile } from '.'
-import { join } from 'path'
-import { upperFirst, camelCase } from 'lodash'
+import { ProjectFile } from '.';
+import { join } from 'path';
+import { upperFirst, camelCase } from 'lodash';
 
 const createContent = (projectName: string): string => {
-  const config = `${upperFirst(camelCase(projectName))}Config`
+  const config = `${upperFirst(camelCase(projectName))}Config`;
 
   return `
   import * as awilix from 'awilix'
@@ -31,12 +31,12 @@ const createContent = (projectName: string): string => {
     return container
 }
 
-  `
-}
+  `;
+};
 
 export const projectContainer = (baseDir: string, projectName: string): ProjectFile => {
   return {
     path: join(baseDir, 'src', 'container.ts'),
     content: createContent(projectName),
-  }
-}
+  };
+};

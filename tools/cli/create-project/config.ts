@@ -1,9 +1,9 @@
-import { ProjectFile } from '.'
-import { join } from 'path'
-import { camelCase, upperFirst } from 'lodash'
+import { ProjectFile } from '.';
+import { join } from 'path';
+import { camelCase, upperFirst } from 'lodash';
 
 const createContent = (projectName: string): string => {
-  const configName = `${upperFirst(camelCase(projectName))}Config`
+  const configName = `${upperFirst(camelCase(projectName))}Config`;
 
   return `
   import { TracingConfig } from '../../../../shared';
@@ -13,12 +13,12 @@ const createContent = (projectName: string): string => {
     serverUri: string
     tracing: TracingConfig
   }
-  `
-}
+  `;
+};
 
 const createValidatorContent = (projectName: string): string => {
-  const configName = `${upperFirst(camelCase(projectName))}Config`
-  const configSchema = `${camelCase(projectName)}ConfigSchema`
+  const configName = `${upperFirst(camelCase(projectName))}Config`;
+  const configSchema = `${camelCase(projectName)}ConfigSchema`;
 
   return `
   import * as Joi from '@hapi/joi'
@@ -38,19 +38,19 @@ const createValidatorContent = (projectName: string): string => {
       throw error
     }
   }
-  `
-}
+  `;
+};
 
 export const config = (baseDir: string, projectName: string): ProjectFile => {
   return {
     path: join(baseDir, 'src', 'app', 'config.ts'),
     content: createContent(projectName),
-  }
-}
+  };
+};
 
 export const configValidator = (baseDir: string, projectName: string): ProjectFile => {
   return {
     path: join(baseDir, 'src', 'app', 'config.validation.ts'),
     content: createValidatorContent(projectName),
-  }
-}
+  };
+};

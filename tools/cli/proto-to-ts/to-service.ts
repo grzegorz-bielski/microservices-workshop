@@ -1,6 +1,6 @@
-import { resolve } from 'path'
-import { kebabCase } from 'lodash'
-import { FileDescriptor, ProtoService, ProtoMethodTuple } from './types'
+import { resolve } from 'path';
+import { kebabCase } from 'lodash';
+import { FileDescriptor, ProtoService, ProtoMethodTuple } from './types';
 
 const template = (baseName: string, types: string, methods: string, methodNames: string[]): string => {
   return `
@@ -36,13 +36,13 @@ class ${baseName}Service implements ${baseName}ServiceHandlers {
 }
 
 export { ${baseName}Service }
-`
-}
+`;
+};
 
 const getServiceTypes = (service: ProtoService, baseName: string): string => {
   const types = Object.entries(service.methods).map((method: ProtoMethodTuple) => {
-    return [method[1].requestType, method[1].responseType].join(',\n')
-  })
+    return [method[1].requestType, method[1].responseType].join(',\n');
+  });
 
   return `
   import {
@@ -51,18 +51,18 @@ const getServiceTypes = (service: ProtoService, baseName: string): string => {
   } from '../grpc/types'
   import {
     CallTracer, Response, Logger, loadMessageDefinition
-  } from '../../../../shared'`
-}
+  } from '../../../../shared'`;
+};
 
 const getServiceMethods = (service: ProtoService): string => {
   const methods: string[] = Object.entries(service.methods).map((method: ProtoMethodTuple) => {
     return `public ${method[0]}(request: ${method[1].requestType}): Promise<Response<${method[1].responseType}>> {
       throw new Error('To be implemented');
-    }`
-  })
+    }`;
+  });
 
-  return methods.join('\n\n')
-}
+  return methods.join('\n\n');
+};
 
 export function generateService(
   packageName: string,
@@ -71,7 +71,7 @@ export function generateService(
   outDir?: string
 ): FileDescriptor {
   const providedOrDefaultOutputDirectory =
-    outDir || resolve(process.cwd(), 'services', `${kebabCase(packageName)}`, 'src', 'service')
+    outDir || resolve(process.cwd(), 'services', `${kebabCase(packageName)}`, 'src', 'service');
 
   return {
     filename: 'service.ts',
@@ -82,5 +82,5 @@ export function generateService(
       getServiceMethods(service),
       Object.keys(service.methods)
     ),
-  }
+  };
 }
