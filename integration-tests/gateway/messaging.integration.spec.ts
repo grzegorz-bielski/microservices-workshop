@@ -60,7 +60,7 @@ describe('Gateway - messaging integration tests', () => {
       const sendMessageValidationResult = Joi.validate(
         sendMessageResponse,
         Joi.object().keys({
-          type: 'messaging-sendMessage',
+          type: Joi.valid('messaging-sendMessage'),
           payload: Joi.object().empty(),
         })
       );
