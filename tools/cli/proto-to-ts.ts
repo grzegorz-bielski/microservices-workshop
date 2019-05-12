@@ -6,15 +6,10 @@ import { upperFirst } from 'lodash';
 import { generateService } from './proto-to-ts/to-service';
 import { generateClient } from './proto-to-ts/to-client';
 import { generateTypes } from './proto-to-ts/to-types';
+import { generateInterface } from './proto-to-ts/to-interface';
 import { ProtoService, ProtoPackage, FileDescriptor } from './proto-to-ts/types';
-import { join } from 'path';
 import { keyInYN } from 'readline-sync';
-
-export type ServicesManifest = {
-  [key: string]: {
-    proto: string;
-  };
-};
+import { loadManifest } from './load-manifest';
 
 export interface ProtoToTsArguments {
   packageName: string;
@@ -27,10 +22,7 @@ export interface ProtoToTsArguments {
 export const protoToTs = (args: ProtoToTsArguments) => {
   const { packageName, manifestPath, generatorType, outDir, protoPath } = args;
 
-  const manifestFullPath = manifestPath || join(process.cwd(), 'manifest.json');
-  const manifest = require(manifestFullPath);
-
-  const servicesManifest = <ServicesManifest>manifest;
+  const servicesManifest = loadManifest(manifestPath)
 
   const getProtoPath = (protoPackage: string): string => resolve(process.cwd(), servicesManifest[protoPackage].proto);
 
@@ -51,6 +43,10 @@ export const protoToTs = (args: ProtoToTsArguments) => {
       const service: ProtoService = <ProtoService>protoPackage[serviceName];
 
       switch (generatorType) {
+        case 'interface':
+          return [
+            generateInterface(baseName, protoPackage, service, serviceName, outDir)
+          ]
         case 'client':
           return [
             generateTypes(packageName, protoPackage, service, serviceName, outDir),

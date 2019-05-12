@@ -4,6 +4,7 @@ import { join } from 'path';
 import { execSync } from 'child_process';
 import chalk from 'chalk';
 import * as program from 'commander';
+import { loadManifest } from './cli/load-manifest';
 
 program.version('1.6.0');
 
@@ -15,6 +16,14 @@ program
   .action(options => {
     handleCreateProjectOption(options);
   });
+
+  program
+    .command('interfaces')
+    .description('Generates client interfaces')
+    .option('-od, --out-dir [outDir]', 'Directory where types should be created')
+    .action(options => {
+      handleGenerateInterfacesOption(options);
+    });
 
 program
   .command('from-proto')
@@ -78,6 +87,25 @@ const handleFromProtoOption = (options: {
     generatorType,
     protoPath,
   });
+};
+
+const handleGenerateInterfacesOption = (options: {
+  manifestPath?: string;
+  outDir?: string;
+}) => {
+  const manifestPath = options.manifestPath;
+  const outDir = options.outDir;
+
+  const manifest = loadManifest(manifestPath)
+
+  for (const service in manifest) {
+    protoToTs({
+      outDir,
+      packageName: service,
+      manifestPath: manifestPath || join(process.cwd(), 'manifest.json'),
+      generatorType: 'interface'
+    });
+  }
 };
 
 program.parse(process.argv);
