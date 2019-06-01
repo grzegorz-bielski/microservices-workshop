@@ -10,7 +10,7 @@ const createContent = (projectName: string): string => {
 
   export interface ${configName} {
     appName: string
-    serverUri: string
+    uri: string
     tracing: TracingConfig
   }
   `;
@@ -27,7 +27,7 @@ const createValidatorContent = (projectName: string): string => {
 
   const ${configSchema} = Joi.object().keys({
     appName: Joi.string().required(),
-    serverUri: Joi.string().required(),
+    uri: Joi.string().required(),
     tracing: tracingConfigSchema.required(),
   })
 

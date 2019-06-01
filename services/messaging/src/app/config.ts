@@ -2,7 +2,7 @@ import { TracingConfig } from '../../../../shared';
 
 export interface MessagingConfig {
   appName: string;
-  serverUri: string;
+  uri: string;
   tracing: TracingConfig;
   db: {
     type: string;

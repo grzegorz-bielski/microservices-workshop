@@ -18,6 +18,6 @@
       "*": ["typings/*"]
     }
   },
-  "include": [ "services/**/*.ts", "tools/**/*.ts", "shared/**/*.ts", "integration-tests/**/*.ts"],
+  "include": [ "services/**/*.ts", "tools/**/*.ts", "shared/**/*.ts", "integration-tests/**/*.ts", "config/**/*.ts"],
   "exclude": ["node_modules", "build/**"]
 }

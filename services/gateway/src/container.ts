@@ -8,7 +8,7 @@ import { SocketIOServer } from './server/socket-io-server';
 
 export default async function createContainer(options?: ContainerOptions): Promise<AwilixContainer> {
   const loadConfig: ConfigLoader = configLoader({});
-  const config: UiGatewayConfig = loadConfig();
+  const config: UiGatewayConfig = await loadConfig();
   validateConfig(config);
 
   const container: AwilixContainer = createBaseContainer({ appName: config.appName, ...config.tracing }, options);

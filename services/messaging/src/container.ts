@@ -12,7 +12,7 @@ import { Message } from './entities/message';
 
 export default async function createContainer(options?: ContainerOptions): Promise<AwilixContainer> {
   const loadConfig: ConfigLoader = configLoader({});
-  const config: MessagingConfig = loadConfig();
+  const config: MessagingConfig = await loadConfig();
   validateConfig(config);
 
   const container: AwilixContainer = createBaseContainer({ appName: config.appName, ...config.tracing }, options);
@@ -25,7 +25,7 @@ export default async function createContainer(options?: ContainerOptions): Promi
   container.register({
     service: awilix.asValue({
       protoPath: getProtoPath('messaging'),
-      uri: config.serverUri,
+      uri: config.uri,
     }),
     messagesRepository: awilix.asValue(messagesRepository),
     server: awilix.asClass(MessagingService),

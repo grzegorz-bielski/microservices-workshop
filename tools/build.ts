@@ -15,12 +15,6 @@ const build = () => {
   });
 
   copySync(join(process.cwd(), 'manifest.json'), join(buildDir, 'manifest.json'));
-
-  try {
-    copySync(join(process.cwd(), 'config'), join(buildDir, 'config'));
-  } catch (err) {
-    console.log(err);
-  }
 };
 
 build();

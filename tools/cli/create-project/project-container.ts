@@ -15,7 +15,7 @@ const createContent = (projectName: string): string => {
 
   export default async function createContainer(options?: ContainerOptions): Promise<AwilixContainer> {
     const loadConfig: ConfigLoader = configLoader({})
-    const config: ${config} = loadConfig()
+    const config: ${config} = await loadConfig()
     validateConfig(config)
 
     const container: AwilixContainer = createBaseContainer({ appName: config.appName, ...config.tracing }, options)

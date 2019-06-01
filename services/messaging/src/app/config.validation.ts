@@ -9,7 +9,7 @@ const dbConfigSchema = Joi.object().keys({
 
 const messagingConfigSchema = Joi.object().keys({
   appName: Joi.string().required(),
-  serverUri: Joi.string().required(),
+  uri: Joi.string().required(),
   tracing: tracingConfigSchema.required(),
   db: dbConfigSchema.required(),
   entities: Joi.array()
