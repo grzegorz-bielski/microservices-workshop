@@ -23,7 +23,7 @@ const createContent = (projectName: string): string => {
     /*container.register({
       service: awilix.asValue({
         protoPath: getProtoPath('name-of-the-service-in-manifest'),
-        uri: config.serverUri,
+        uri: config.uri,
       }),
       server: awilix.asClass(SomeSErvice),
     })*/
