@@ -64,6 +64,7 @@
     "generate-skeleton": "docker-compose run --rm js node ./build/tools create-project",
     "generate-client": "docker-compose run --rm js node ./build/tools from-proto --generator-type client",
     "generate-service": "docker-compose run --rm js node ./build/tools from-proto --generator-type service",
-    "generate-interfaces": "docker-compose run --rm js node ./build/tools interfaces"
+    "generate-interfaces": "docker-compose run --rm js node ./build/tools interfaces",
+    "update-proto": "docker-compose run --rm builder node ./build/tools/build"
   }
 }
