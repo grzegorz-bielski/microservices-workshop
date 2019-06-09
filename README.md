@@ -14,7 +14,11 @@ After checkout of a repository, please perform the following steps in exact sequ
     ```
 2. Run `npm run docker-build`
 
-3. Run watch - `npm run watch`
+3. Run `npm run shell`
+
+4. Run `npm i` and exit current shell
+
+5. Run watch - `npm run watch`
 
 ## IDE autocomplete
 
