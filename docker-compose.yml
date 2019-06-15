@@ -26,8 +26,6 @@ services:
   js:
     image: app:latest
     volumes: *volumes
-    depends_on:
-      - base
     networks:
       - app
 
