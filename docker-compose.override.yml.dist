@@ -4,6 +4,8 @@ services:
     depends_on:
       - jaeger
       - adminer
+    ports:
+      - 5005:50050  
 
   adminer:
     hostname: adminer

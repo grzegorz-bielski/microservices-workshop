@@ -3,8 +3,7 @@ import * as assert from 'assert';
 import * as mocha from 'mocha';
 import * as Joi from '@hapi/joi';
 import { fromEvent } from 'rxjs';
-import { first } from 'rxjs/operators';
-import { join } from 'path';
+import { first, take, toArray } from 'rxjs/operators';
 
 describe('Gateway - messaging integration tests', () => {
   let socket: SocketIOClient.Socket;
@@ -43,7 +42,7 @@ describe('Gateway - messaging integration tests', () => {
       assert.equal(joinChatValidationResult.error, null);
 
       const onSendMessage = fromEvent(socket, 'message')
-        .pipe(first())
+        .pipe(take(2), toArray())
         .toPromise();
 
       socket.emit('message', {
@@ -55,31 +54,14 @@ describe('Gateway - messaging integration tests', () => {
         },
       });
 
-      const sendMessageResponse = await onSendMessage;
+      const responsesOnSendMessgae = await onSendMessage;
 
-      const sendMessageValidationResult = Joi.validate(
-        sendMessageResponse,
-        Joi.object().keys({
-          type: Joi.valid('messaging-sendMessage'),
-          payload: Joi.object().empty(),
-        })
-      );
-      assert.equal(sendMessageValidationResult.error, null);
+      const joinChatResponse: any = responsesOnSendMessgae.find(response => (<any>response).type === 'messaging-joinChat')
+      const sendMessageResponse: any = responsesOnSendMessgae.find(response => (<any>response).type === 'messaging-sendMessage')
 
-      const onBroadcastedMessage = fromEvent(socket, 'message')
-        .pipe(first())
-        .toPromise();
+      assert.deepEqual(joinChatResponse.payload, { content: 'some message', username: 'John' })
 
-      const boardcastedMessageResponse = await onBroadcastedMessage;
-
-      const broadcastedMessageValidationResult = Joi.validate(
-        boardcastedMessageResponse,
-        Joi.object().keys({
-          payload: Joi.object().keys({ content: Joi.valid('some message'), username: Joi.valid('John') }),
-          type: Joi.string().valid('messaging-joinChat'),
-        })
-      );
-      assert.equal(broadcastedMessageValidationResult.error, null);
+      assert.deepEqual(sendMessageResponse.payload, {})
 
       socket.close();
       done();

@@ -38,6 +38,16 @@ services:
     networks:
       - app   
 
+  spa:
+    image: sethii/chat-spa
+    container_name: spa
+    depends_on:
+      - gateway
+    networks:
+      - app
+    ports:
+      - 3000:80
+
   gateway:
     <<: *common
     working_dir: /app/build
