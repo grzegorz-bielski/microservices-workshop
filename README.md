@@ -1,9 +1,5 @@
 # App
 
-## Docs
-
-Configure app and run `npm run spa` to get to docs.
-
 ## Configuration
 
 After checkout of a repository, please perform the following steps in exact sequence:
