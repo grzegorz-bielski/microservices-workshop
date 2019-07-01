@@ -99,12 +99,14 @@ const handleGenerateInterfacesOption = (options: {
   const manifest = loadManifest(manifestPath)
 
   for (const service in manifest) {
-    protoToTs({
-      outDir,
-      packageName: service,
-      manifestPath: manifestPath || join(process.cwd(), 'manifest.json'),
-      generatorType: 'interface'
-    });
+    if (manifest.hasOwnProperty(service)) {
+      protoToTs({
+        outDir,
+        packageName: service,
+        manifestPath: manifestPath || join(process.cwd(), 'manifest.json'),
+        generatorType: 'interface'
+      });
+    }
   }
 };
 

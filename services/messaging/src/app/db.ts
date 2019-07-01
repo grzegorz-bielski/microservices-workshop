@@ -4,7 +4,6 @@ import { validateConfig } from './config.validation';
 
 const loadConfig: ConfigLoader = configLoader({});
 const config: MessagingConfig = loadConfig('messaging');
-console.log(config)
 validateConfig(config);
 
 module.exports = {

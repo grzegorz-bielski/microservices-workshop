@@ -10,7 +10,5 @@ export const loadManifest = (manifestPath?: string) => {
   const manifestFullPath = manifestPath || join(process.cwd(), 'manifest.json');
   const manifest = require(manifestFullPath);
 
-  const servicesManifest = <ServicesManifest>manifest;
-
-  return servicesManifest
+  return <ServicesManifest>manifest;
 }

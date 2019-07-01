@@ -20,14 +20,6 @@ After checkout of a repository, please perform the following steps in exact sequ
 
 5. Run watch - `npm run watch`
 
-## IDE autocomplete
-
-In order to have autocomplete in IDE you should install node_modules locally.
-
-1. Configure app by performing steps above.
-
-2. Run `npm i`
-
 ## Dev setup
 
 This app is fully dockerized, so in order to use it you have to have docker and docker-compose installed. What's more you need to have npm in order to run npm scripts.
@@ -61,7 +53,7 @@ We're using Prettier and TSLint to keep code clean. In order to reformat/check c
 
 ```
 npm run tslint
-npm run prettier
+npm run format
 ```
 
 ##Tests
