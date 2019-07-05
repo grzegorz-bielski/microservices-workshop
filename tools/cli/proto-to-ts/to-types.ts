@@ -66,12 +66,15 @@ const toTsTypes = (type: MappedProtoType) => {
 
   if (type.fields) {
     const properties: string[] = Object.entries(type.fields).map(
-      (mappedField: [string, ProtoTypeField]) => `${mappedField[0]}: ${protoTypeToJSType(mappedField[1])}`
-    );
+      (mappedField: [string, ProtoTypeField]) =>
+        `${mappedField[0]}${
+          mappedField[1].options && 'optional' in mappedField[1].options ? '?' : ''
+        }: ${protoTypeToJSType(mappedField[1])}`
+    )
 
-    return `export type ${type.name} = { 
+    return `export type ${type.name} = {
       ${properties.join('\n')}
-    };\n`;
+    };\n`
   }
 
   return `export type ${type.name} = null\n`;

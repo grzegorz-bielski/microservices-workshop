@@ -20,7 +20,6 @@ const createContent = (): string => {
     process.exit(1)
   })
 
-    container.resolve<any>('server')
   })()
   `;
 };

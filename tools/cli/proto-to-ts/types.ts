@@ -4,9 +4,14 @@ export type FileDescriptor = {
   content: string;
 };
 
+export type ProtoOptionsField = {
+  optional?: boolean
+}
+
 export type ProtoTypeField = {
   type: string | ProtoTypeField;
   rule?: 'repeated';
+  options?: ProtoOptionsField;
 };
 
 export type ProtoType = {

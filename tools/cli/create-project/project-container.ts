@@ -20,13 +20,7 @@ const createContent = (projectName: string): string => {
 
     const container: AwilixContainer = createBaseContainer({ appName: config.appName, ...config.tracing }, options)
 
-    /*container.register({
-      service: awilix.asValue({
-        protoPath: getProtoPath('name-of-the-service-in-manifest'),
-        uri: config.uri,
-      }),
-      server: awilix.asClass(SomeSErvice),
-    })*/
+    // register dependencies here
 
     return container
 }

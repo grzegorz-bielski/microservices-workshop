@@ -67,7 +67,7 @@ export class SocketIOServer {
     this.dependencies.logger.info(JSON.stringify(message));
 
     try {
-      this.handleCall(data, socket, span);
+      await this.handleCall(data, socket, span);
     } catch (e) {
       const errorMessage = internalError();
       this.dependencies.logger.error(errorMessage.payload);
@@ -77,7 +77,7 @@ export class SocketIOServer {
     }
   }
 
-  private handleCall(data: SocketMessage, socket: SocketIO.Socket, span: Span) {
+  private async handleCall(data: SocketMessage, socket: SocketIO.Socket, span: Span) {
     if (!this.dependencies.clients[data.serviceName]) {
       this.dependencies.logger.error(`Service ${data.serviceName} does not exist`);
       return;
@@ -122,15 +122,16 @@ export class SocketIOServer {
           });
         }
       })
-      .catch(this.handleErrors(span));
+      .catch(this.handleErrors(socket, span));
   }
 
-  private handleErrors(span: Span) {
+  private handleErrors(socket: SocketIO.Socket, span: Span) {
     return (error: any) => {
       const errorMessage = { result: 'error', error };
       span.addTags(errorMessage);
 
       this.dependencies.logger.error(JSON.stringify(errorMessage));
+      socket.emit('message', errorMessage)
     };
   }
 }
