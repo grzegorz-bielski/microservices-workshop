@@ -88,9 +88,19 @@ export class SocketIOServer {
       return;
     }
 
+    const sd = await this.dependencies.clients.security.hasAccess({
+      accessToken: data.accessToken,
+      resourceId: `${data.serviceName}/${data.serviceOperation}`,
+    });
+
+    if (!sd.hasAccess) {
+      throw new Error('no access');
+    }
+
     this.dependencies.clients[data.serviceName]
       [data.serviceOperation]({
         ...data.payload,
+        accessToken: data.accessToken,
         requestId: data.requestId,
         tracingId: this.dependencies.tracer.tracingIdToString(span),
       })
@@ -131,7 +141,7 @@ export class SocketIOServer {
       span.addTags(errorMessage);
 
       this.dependencies.logger.error(JSON.stringify(errorMessage));
-      socket.emit('message', errorMessage)
+      socket.emit('message', errorMessage);
     };
   }
 }

@@ -1,0 +1,12 @@
+syntax="proto3";
+
+package security;
+
+message AuthenticateRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message AuthenticateResponse {
+    string accessToken = 1;
+}

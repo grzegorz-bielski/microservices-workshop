@@ -1,0 +1,12 @@
+syntax="proto3";
+
+package security;
+
+message HasAccessRequest {
+    string accessToken = 1 [optional = true];
+    string resourceId = 2;
+}
+
+message HasAccessResponse {
+    bool hasAccess = 1;
+}

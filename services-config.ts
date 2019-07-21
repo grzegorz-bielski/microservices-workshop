@@ -3,7 +3,7 @@ import { resolve } from 'path';
 import { Logger } from './shared';
 import { upperFirst } from 'lodash';
 
-type ServiceType = 'messaging';
+type ServiceType = 'messaging' | 'security';
 // service-types-ends-here
 
 export type ServicesManifest = {

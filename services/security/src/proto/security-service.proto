@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "authenticate.proto";
+import "has-access.proto";
+
+package security;
+
+service SecurityService {
+    rpc authenticate (AuthenticateRequest) returns (AuthenticateResponse) {};
+    rpc hasAccess  (HasAccessRequest) returns (HasAccessResponse) {};
+}
