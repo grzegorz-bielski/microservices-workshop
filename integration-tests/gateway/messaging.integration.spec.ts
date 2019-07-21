@@ -2,8 +2,13 @@ import * as socketIo from 'socket.io-client';
 import * as assert from 'assert';
 import * as mocha from 'mocha';
 import * as Joi from '@hapi/joi';
-import { fromEvent } from 'rxjs';
-import { first, take, toArray } from 'rxjs/operators';
+import { fromEvent, combineLatest, Observable, zip } from 'rxjs';
+import { tap, take, share, skip, filter, switchMapTo } from 'rxjs/operators';
+
+type SocketMsg<T> = { payload: T; type: string };
+type LogInMsg = SocketMsg<{ accessToken: string }>;
+type JoinChatMsg = SocketMsg<{}>;
+type Msg = LogInMsg | JoinChatMsg;
 
 describe('Gateway - messaging integration tests', () => {
   let socket: SocketIOClient.Socket;
@@ -17,54 +22,94 @@ describe('Gateway - messaging integration tests', () => {
   });
 
   it('joins to chat and sends a message', done => {
-    const connect$ = fromEvent(socket, 'connect');
-    connect$.subscribe(async () => {
-      const onJoinChatMessage = fromEvent(socket, 'message')
-        .pipe(first())
-        .toPromise();
+    const connection$ = fromEvent(socket, 'connect').pipe(
+      tap(() =>
+        socket.emit('message', {
+          serviceName: 'security',
+          serviceOperation: 'authenticate',
+          payload: {
+            username: 'John',
+            // tslint:disable-next-line:no-hardcoded-credentials
+            password: 'werewr',
+          },
+        })
+      )
+    );
 
-      socket.emit('message', {
-        serviceName: 'messaging',
-        serviceOperation: 'joinChat',
-        payload: {
-          username: 'John',
-        },
-      });
+    const msg$ = connection$.pipe(
+      switchMapTo(fromEvent<Msg>(socket, 'message')),
+      share()
+    );
 
-      const joinChatMessageResponse = await onJoinChatMessage;
-      const joinChatValidationResult = Joi.validate(
-        joinChatMessageResponse,
+    const toMsgOfType = toMsg(msg$);
+
+    const login$ = msg$.pipe(
+      filter(({ type }) => type === 'security-authenticate'),
+      share()
+    );
+
+    const joinChat$ = login$.pipe(
+      tap(msg => {
+        socket.emit('message', {
+          serviceName: 'messaging',
+          serviceOperation: 'joinChat',
+          accessToken: getAccessToken(msg),
+          payload: {
+            username: 'John',
+          },
+        });
+      }),
+      toMsgOfType('messaging-joinChat')
+    );
+
+    const firstChatMsg$ = joinChat$.pipe(take(1));
+    const secondChatMsg$ = joinChat$.pipe(skip(1));
+
+    const sendMessage$ = combineLatest(login$, joinChat$).pipe(
+      tap(([msg]) =>
+        socket.emit('message', {
+          serviceName: 'messaging',
+          serviceOperation: 'sendMessage',
+          accessToken: getAccessToken(msg),
+          payload: {
+            username: 'John',
+            content: 'some message',
+          },
+        })
+      ),
+      toMsgOfType('messaging-sendMessage')
+    );
+
+    zip(secondChatMsg$, sendMessage$).subscribe(() => done());
+
+    firstChatMsg$.subscribe(msg => {
+      const validationRes = Joi.validate(
+        msg,
         Joi.object().keys({
           type: Joi.string().valid('messaging-joinChat'),
           payload: Joi.object().empty(),
         })
       );
-      assert.equal(joinChatValidationResult.error, null);
 
-      const onSendMessage = fromEvent(socket, 'message')
-        .pipe(take(2), toArray())
-        .toPromise();
-
-      socket.emit('message', {
-        serviceName: 'messaging',
-        serviceOperation: 'sendMessage',
-        payload: {
-          username: 'John',
-          content: 'some message',
-        },
-      });
-
-      const responsesOnSendMessgae = await onSendMessage;
-
-      const joinChatResponse: any = responsesOnSendMessgae.find(response => (<any>response).type === 'messaging-joinChat')
-      const sendMessageResponse: any = responsesOnSendMessgae.find(response => (<any>response).type === 'messaging-sendMessage')
-
-      assert.deepEqual(joinChatResponse.payload, { content: 'some message', username: 'John' })
-
-      assert.deepEqual(sendMessageResponse.payload, {})
-
-      socket.close();
-      done();
+      assert.equal(validationRes.error, null);
     });
+
+    secondChatMsg$.subscribe(msg => assert.deepEqual(msg.payload, { content: 'some message', username: 'John' }));
+
+    sendMessage$.subscribe(msg => assert.deepEqual(msg.payload, {}));
   });
 });
+
+function getAccessToken(msg: Msg) {
+  return (msg as LogInMsg).payload.accessToken;
+}
+
+type ToMsgMapper = (b: string) => (a: Observable<Msg | Msg[]>) => Observable<Msg>;
+function toMsg(msg$: Observable<Msg>): ToMsgMapper {
+  return type => source$ =>
+    source$.pipe(
+      switchMapTo(msg$),
+      share(),
+      filter(msg => msg.type === type)
+    );
+}

@@ -2,5 +2,9 @@
   "messaging": {
     "proto": "services/messaging/src/proto/messaging-service.proto",
     "client": "services/messaging/src/grpc/client"
+  },
+  "security": {
+    "proto": "services/security/src/proto/security-service.proto",
+    "client": "services/security/src/grpc/client"
   }
 }

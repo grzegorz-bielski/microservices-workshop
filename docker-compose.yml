@@ -39,7 +39,7 @@ services:
       - app   
 
   spa:
-    image: sethii/chat-spa
+    image: sethii/chat-spa-secure
     container_name: spa
     depends_on:
       - gateway
@@ -56,6 +56,7 @@ services:
     hostname: gateway  
     depends_on:
       - messaging
+      - security
 
   messaging:
     <<: *common
@@ -65,6 +66,13 @@ services:
     hostname: messaging 
     depends_on:
       - messaging-db
+
+  security:
+    <<: *common
+    working_dir: /app/build
+    container_name: security
+    command: [sh, -c, 'node-dev ./services/security/src/index.js --configKey security']
+    hostname: security
 
   integration-tests:
     <<: *common
